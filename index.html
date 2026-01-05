@@ -35,6 +35,84 @@
             padding-bottom: 50px;
         }
 
+        /* --- LOGIN SCREEN STYLES (NEW) --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-box {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 1px solid var(--border);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .login-box p {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+            font-weight: 600;
+        }
+
+        /* --- ORIGINAL STYLES BELOW --- */
+
         /* --- Hero & Nav --- */
         nav {
             background: var(--surface);
@@ -382,7 +460,7 @@
             border-color: var(--primary);
         }
 
-        /* --- Updated Strategy Allocation Styles (Section 6) --- */
+        /* --- Strategy Allocation Styles --- */
         .strategy-container {
             display: flex;
             flex-direction: column;
@@ -399,7 +477,6 @@
             transition: all 0.2s;
         }
 
-        /* Specific colors for each strategy */
         .strat-a { border-left: 5px solid var(--accent-green); }
         .strat-b { border-left: 5px solid var(--accent-purple); }
         .strat-c { border-left: 5px solid var(--primary); }
@@ -432,7 +509,6 @@
             color: #334155;
         }
 
-        /* Slider Logic */
         .slider-wrapper {
             margin-top: 0.5rem;
         }
@@ -465,7 +541,7 @@
         @media (min-width: 768px) {
             .strategy-row {
                 display: grid;
-                grid-template-columns: 1fr 1fr; /* Text on left, slider on right */
+                grid-template-columns: 1fr 1fr;
                 align-items: center;
                 gap: 1.5rem;
             }
@@ -559,419 +635,481 @@
         }
         .deep-dive h4 { color: var(--accent-purple); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
 
-        /* Helper for text */
         .text-muted { color: var(--secondary); font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">
-            <i class="fas fa-chart-pie"></i>
-            <span>ResearchHub ID</span>
-        </div>
-        <div style="font-size: 0.9rem; color: var(--secondary); display: none; margin-left: auto; margin-right: 1rem; @media(min-width: 600px){display:block;}">
-            v2.2 Stable
-        </div>
-    </nav>
-
-    <header class="hero">
-        <h1>Investor DNA Profiler</h1>
-        <p>A specialized tool for understanding the behavioral nuances of the Indonesian retail investor market. Switch modes below.</p>
-        
-        <div class="tabs-container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('qual')"><i class="fas fa-comments"></i> Qualitative Guide</button>
-                <button class="tab-btn" onclick="switchTab('quant')"><i class="fas fa-calculator"></i> Quantitative Survey</button>
+    <div id="login-screen">
+        <div class="login-box">
+            <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;">
+                <i class="fas fa-lock"></i>
             </div>
+            <h2>Restricted Access</h2>
+            <p>Please enter the research access code to view this dashboard.</p>
+            
+            <input type="password" id="password-input" class="login-input" placeholder="Enter Access Code">
+            
+            <button class="login-btn" onclick="authenticate()">
+                View Dashboard <i class="fas fa-arrow-right"></i>
+            </button>
+            
+            <p id="login-error" class="error-msg">
+                <i class="fas fa-circle-exclamation"></i> Invalid access code.
+            </p>
         </div>
-    </header>
+    </div>
+    <div id="main-app" style="display: none;">
 
-    <main>
-        <div id="qual" class="view-section active">
-            <div class="section-header">
-                <h2><i class="fas fa-microphone-alt" style="color: var(--primary);"></i> Interview Guide (IDI)</h2>
-                <div class="badges">
-                    <span class="badge badge-red">Indonesia Market</span>
-                    <span class="badge">Behavioral Deep Dive</span>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-chart-pie"></i>
+                <span>ResearchHub ID</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--secondary); display: none; margin-left: auto; margin-right: 1rem; @media(min-width: 600px){display:block;}">
+                v2.2 Stable
+            </div>
+        </nav>
+
+        <header class="hero">
+            <h1>Investor DNA Profiler</h1>
+            <p>A specialized tool for understanding the behavioral nuances of the Indonesian retail investor market. Switch modes below.</p>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('qual')"><i class="fas fa-comments"></i> Qualitative Guide</button>
+                    <button class="tab-btn" onclick="switchTab('quant')"><i class="fas fa-calculator"></i> Quantitative Survey</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="qual" class="view-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-microphone-alt" style="color: var(--primary);"></i> Interview Guide (IDI)</h2>
+                    <div class="badges">
+                        <span class="badge badge-red">Indonesia Market</span>
+                        <span class="badge">Behavioral Deep Dive</span>
+                    </div>
+                </div>
+
+                <div class="accordion-item open">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Part 1: Warm-Up & DNA (10 Mins)
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p class="text-muted" style="margin-bottom: 1rem;">Goal: Understand self-perception vs. behavior.</p>
+                        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                            <li><strong>The "Arisan" Pitch:</strong> "Describe your investment style to a friend in one sentence."</li>
+                            <li><strong>The Pain Test:</strong> "Recall your last big loss (Crypto/Tech). Did you Sell, Hold (Nyangkut), or Buy More (Serok)?"</li>
+                            <li><strong>Goal Anchor:</strong> "Are you protecting wealth (Deposito style) or chasing multiplication (Trading)?"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Part 2: Concept Stress Testing</h3>
+                <p class="text-muted">Present these cards to the participant to gauge reaction.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="card-top-tag" style="background:#ecfdf5; color: #059669;">Ultra-Conservative</div>
+                        <h3 style="margin-bottom: 1rem;">Card A: The Fortress</h3>
+                        <div class="c-stat-row">
+                            <span>Structure</span>
+                            <span class="c-val">100% Guarantee</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Return</span>
+                            <span class="c-val">Net 6% p.a.</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Lock-Up</span>
+                            <span class="c-val">3 Years</span>
+                        </div>
+                        <div class="probe-box">
+                            <i class="fas fa-comment-dots"></i> "Does 6% feel safe or stagnant? Would you lock money for 3 years just for safety?"
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="card-top-tag" style="background:#f5f3ff; color: #7c3aed;">Balanced</div>
+                        <h3 style="margin-bottom: 1rem;">Card B: Asymmetric</h3>
+                        <div class="c-stat-row">
+                            <span>Structure</span>
+                            <span class="c-val">90% Protected</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Return</span>
+                            <span class="c-val">Target 10-12% p.a.</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Lock-Up</span>
+                            <span class="c-val">1.5 Years</span>
+                        </div>
+                        <div class="probe-box">
+                            <i class="fas fa-comment-dots"></i> "Is risking 10% worth doubling the return of a Deposito?"
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="card-top-tag" style="background:#fef2f2; color: #dc2626;">Aggressive</div>
+                        <h3 style="margin-bottom: 1rem;">Card C: Alpha Hunter</h3>
+                        <div class="c-stat-row">
+                            <span>Structure</span>
+                            <span class="c-val">0% Protected</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Return</span>
+                            <span class="c-val">Target 20-25% p.a.</span>
+                        </div>
+                        <div class="c-stat-row">
+                            <span>Lock-Up</span>
+                            <span class="c-val">Monthly</span>
+                        </div>
+                        <div class="probe-box">
+                            <i class="fas fa-comment-dots"></i> "No safety net. Who is this for? Is it for you?"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="deep-dive">
+                    <h4><i class="fas fa-layer-group"></i> The "5 Whys" Laddering</h4>
+                    <p style="font-size: 0.95rem;">If they pick "Capital Protection":</p>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>"Why is the guarantee important?" -> <em>Don't want to lose Modal.</em></li>
+                        <li>"Why is keeping principal crucial now?" -> <em>Need it for Renovation.</em></li>
+                        <li>"How would you feel if it wasn't there?" -> <em>Like I failed my family.</em> (Root: Fear of Failure)</li>
+                    </ol>
                 </div>
             </div>
 
-            <div class="accordion-item open">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    Part 1: Warm-Up & DNA (10 Mins)
-                    <i class="fas fa-chevron-up"></i>
+            <div id="quant" class="view-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> Quantitative Instrument</h2>
+                    <div class="badges">
+                        <span class="badge badge-red">Real-time Scoring</span>
+                        <span class="badge">IDR Context</span>
+                    </div>
                 </div>
-                <div class="accordion-content">
-                    <p class="text-muted" style="margin-bottom: 1rem;">Goal: Understand self-perception vs. behavior.</p>
-                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
-                        <li><strong>The "Arisan" Pitch:</strong> "Describe your investment style to a friend in one sentence."</li>
-                        <li><strong>The Pain Test:</strong> "Recall your last big loss (Crypto/Tech). Did you Sell, Hold (Nyangkut), or Buy More (Serok)?"</li>
-                        <li><strong>Goal Anchor:</strong> "Are you protecting wealth (Deposito style) or chasing multiplication (Trading)?"</li>
+
+                <div class="card">
+                    <h3>1. Portfolio Composition</h3>
+                    <p class="text-muted">Which describes your current asset mix?</p>
+                    <div class="selection-group">
+                        <label class="selection-card">
+                            <input type="radio" name="q1" value="0">
+                            <span>100% Cash/Deposito</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q1" value="25">
+                            <span>Mostly SBN (Bonds)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q1" value="50">
+                            <span>Balanced Mix (Reksa Dana Campuran)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q1" value="100">
+                            <span>Aggressive (Crypto/Stocks)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2. Time Horizon Constraint</h3>
+                    <p class="text-muted">When do you realistically need this money back?</p>
+                    <div class="selection-group">
+                        <label class="selection-card">
+                            <input type="radio" name="q3" value="0">
+                            <span>< 12 Months (Butuh Cepat)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q3" value="33">
+                            <span>1 - 3 Years</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q3" value="66">
+                            <span>3 - 5 Years</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q3" value="100">
+                            <span>5+ Years (Long Term)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>3. Behavioral Checks</h3>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <p><strong>Loss Aversion (Coin Toss):</strong><br>
+                        <span class="text-muted">On Tails you lose Rp 1jt. How much win on Heads to play?</span></p>
+                        <div class="selection-group">
+                            <label class="selection-card">
+                                <input type="radio" name="q5" value="100">
+                                <span>Rp 1.000.000 (Rational)</span>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="q5" value="66">
+                                <span>Rp 1.500.000 (Moderate)</span>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="q5" value="33">
+                                <span>Rp 2.000.000 (High Aversion)</span>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="q5" value="0">
+                                <span>Never Play (Extreme Safety)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                        <p><strong>Literacy Check:</strong><br>
+                        <span class="text-muted">If BI Interest Rates rise, what happens to SBN prices?</span></p>
+                        <div class="selection-group">
+                            <label class="selection-card">
+                                <input type="radio" name="q6" value="wrong">
+                                <span>They Rise (Harganya Naik)</span>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="q6" value="correct">
+                                <span>They Fall (Harganya Turun)</span>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="q6" value="neutral">
+                                <span>Stay Same / Don't Know</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>4. The Volatility Test</h3>
+                    <p class="text-muted">Market drops 15% in one month. What do you do?</p>
+                    <div class="selection-group">
+                        <label class="selection-card">
+                            <input type="radio" name="q8" value="0">
+                            <span>Sell / Cut Loss immediately</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q8" value="50">
+                            <span>Wait / Hold (Nyangkut)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q8" value="100">
+                            <span>Buy More (Serok Bawah)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5. Choice-Based Conjoint</h3>
+                    <p class="text-muted" style="margin-bottom: 1rem;">Imagine investing <strong>Rp 500 Juta</strong>. Pick one package:</p>
+                    <div class="conjoint-wrapper">
+                        <table class="conjoint-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Option 1 (Safety)</th>
+                                    <th>Option 2 (Sweet Spot)</th>
+                                    <th>Option 3 (High Octane)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Protection</td>
+                                    <td>100% Guaranteed</td>
+                                    <td>90% Protected</td>
+                                    <td>0% Protected</td>
+                                </tr>
+                                <tr>
+                                    <td>Return</td>
+                                    <td>6.0% p.a.</td>
+                                    <td>11% p.a.</td>
+                                    <td>22% p.a.</td>
+                                </tr>
+                                <tr>
+                                    <td>Lock-Up</td>
+                                    <td>3 Years</td>
+                                    <td>1 Year</td>
+                                    <td>Monthly</td>
+                                </tr>
+                                <tr>
+                                    <td>Action</td>
+                                    <td><button class="conjoint-btn" onclick="selectConjoint(0, 1)">Select This</button></td>
+                                    <td><button class="conjoint-btn" onclick="selectConjoint(50, 2)">Select This</button></td>
+                                    <td><button class="conjoint-btn" onclick="selectConjoint(100, 3)">Select This</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>6. The Budget Allocation Game</h3>
+                    <p class="text-muted" style="margin-bottom: 1.5rem;">
+                        You have <strong>Rp 1 Miliar</strong>. How much would you put in each bucket? 
+                        <br><small><em>(Must total 100%)</em></small>
+                    </p>
+
+                    <div class="strategy-container">
+                        
+                        <div class="strategy-row strat-a">
+                            <div class="strategy-info">
+                                <div class="strategy-title">
+                                    <span>
+                                        <i class="fas fa-shield-alt" style="color: var(--accent-green)"></i> 
+                                        The Safety Net
+                                        <span class="real-world-tag">Like Deposito / SBN</span>
+                                    </span>
+                                </div>
+                                <p class="strategy-desc">
+                                    100% Guaranteed Principal.<br>
+                                    <strong>Return: ~6% p.a.</strong> (Low but Safe)
+                                </p>
+                            </div>
+                            <div class="slider-wrapper">
+                                <div class="slider-meta">
+                                    <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                    <span id="val-a" style="font-weight:700; color:var(--accent-green);">33%</span>
+                                </div>
+                                <input type="range" id="range-a" min="0" max="100" value="33" oninput="updateAllocation()">
+                            </div>
+                        </div>
+
+                        <div class="strategy-row strat-b">
+                            <div class="strategy-info">
+                                <div class="strategy-title">
+                                    <span>
+                                        <i class="fas fa-balance-scale" style="color: var(--accent-purple)"></i> 
+                                        The Smart Balance
+                                        <span class="real-world-tag">Like Balanced Fund</span>
+                                    </span>
+                                </div>
+                                <p class="strategy-desc">
+                                    90% Protected (Risking 10%).<br>
+                                    <strong>Return: Target 10-12% p.a.</strong> (Moderate)
+                                </p>
+                            </div>
+                            <div class="slider-wrapper">
+                                <div class="slider-meta">
+                                    <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                    <span id="val-b" style="font-weight:700; color:var(--accent-purple);">33%</span>
+                                </div>
+                                <input type="range" id="range-b" min="0" max="100" value="33" oninput="updateAllocation()">
+                            </div>
+                        </div>
+
+                        <div class="strategy-row strat-c">
+                            <div class="strategy-info">
+                                <div class="strategy-title">
+                                    <span>
+                                        <i class="fas fa-rocket" style="color: var(--primary)"></i> 
+                                        The Alpha Hunter
+                                        <span class="real-world-tag">Like Stocks / Crypto</span>
+                                    </span>
+                                </div>
+                                <p class="strategy-desc">
+                                    0% Protected (Can lose principal).<br>
+                                    <strong>Return: Target 20%+ p.a.</strong> (High Risk)
+                                </p>
+                            </div>
+                            <div class="slider-wrapper">
+                                <div class="slider-meta">
+                                    <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                    <span id="val-c" style="font-weight:700; color:var(--primary);">34%</span>
+                                </div>
+                                <input type="range" id="range-c" min="0" max="100" value="34" oninput="updateAllocation()">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.9rem; color: var(--secondary);">Total Allocation:</span>
+                        <span id="total-display" style="font-weight: 800; font-size: 1.3rem;">Total: 100%</span>
+                    </div>
+                </div>
+
+                <button class="cta-btn" onclick="calculateScientificResults()">
+                    <i class="fas fa-microchip"></i> Generate Analysis Profile
+                </button>
+
+                <div id="results-panel" class="results-panel">
+                    <div class="res-header">
+                        <div>
+                            <h2 id="res-archetype" style="color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2rem;">Calculating...</h2>
+                            <p style="color: #94a3b8;">Interpretation based on weighted behavioral scoring.</p>
+                        </div>
+                        <div class="score-circle">
+                            <div class="score-val" id="res-score">0</div>
+                            <div class="score-lbl">Risk Score</div>
+                        </div>
+                    </div>
+
+                    <div class="rec-box">
+                        <h4 style="color: #d8b4fe; margin-bottom: 0.5rem;">Recommended Product Formulation</h4>
+                        <p id="res-recommendation" style="font-size: 1.1rem; line-height: 1.6;">Pending calculation...</p>
+                    </div>
+
+                    <h4 style="margin-top: 2rem; color: var(--accent-green); margin-bottom: 1rem;">Behavioral Insights Detected:</h4>
+                    <ul id="res-insights" style="padding-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
+                        <li>Complete the survey above to see insights.</li>
                     </ul>
                 </div>
+
             </div>
+        </main>
 
-            <h3 style="margin-top: 2rem;">Part 2: Concept Stress Testing</h3>
-            <p class="text-muted">Present these cards to the participant to gauge reaction.</p>
-
-            <div class="concept-grid">
-                <div class="concept-card">
-                    <div class="card-top-tag" style="background:#ecfdf5; color: #059669;">Ultra-Conservative</div>
-                    <h3 style="margin-bottom: 1rem;">Card A: The Fortress</h3>
-                    <div class="c-stat-row">
-                        <span>Structure</span>
-                        <span class="c-val">100% Guarantee</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Return</span>
-                        <span class="c-val">Net 6% p.a.</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Lock-Up</span>
-                        <span class="c-val">3 Years</span>
-                    </div>
-                    <div class="probe-box">
-                        <i class="fas fa-comment-dots"></i> "Does 6% feel safe or stagnant? Would you lock money for 3 years just for safety?"
-                    </div>
-                </div>
-
-                <div class="concept-card">
-                    <div class="card-top-tag" style="background:#f5f3ff; color: #7c3aed;">Balanced</div>
-                    <h3 style="margin-bottom: 1rem;">Card B: Asymmetric</h3>
-                    <div class="c-stat-row">
-                        <span>Structure</span>
-                        <span class="c-val">90% Protected</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Return</span>
-                        <span class="c-val">Target 10-12% p.a.</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Lock-Up</span>
-                        <span class="c-val">1.5 Years</span>
-                    </div>
-                    <div class="probe-box">
-                        <i class="fas fa-comment-dots"></i> "Is risking 10% worth doubling the return of a Deposito?"
-                    </div>
-                </div>
-
-                <div class="concept-card">
-                    <div class="card-top-tag" style="background:#fef2f2; color: #dc2626;">Aggressive</div>
-                    <h3 style="margin-bottom: 1rem;">Card C: Alpha Hunter</h3>
-                    <div class="c-stat-row">
-                        <span>Structure</span>
-                        <span class="c-val">0% Protected</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Return</span>
-                        <span class="c-val">Target 20-25% p.a.</span>
-                    </div>
-                    <div class="c-stat-row">
-                        <span>Lock-Up</span>
-                        <span class="c-val">Monthly</span>
-                    </div>
-                    <div class="probe-box">
-                        <i class="fas fa-comment-dots"></i> "No safety net. Who is this for? Is it for you?"
-                    </div>
-                </div>
-            </div>
-
-            <div class="deep-dive">
-                <h4><i class="fas fa-layer-group"></i> The "5 Whys" Laddering</h4>
-                <p style="font-size: 0.95rem;">If they pick "Capital Protection":</p>
-                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
-                    <li>"Why is the guarantee important?" -> <em>Don't want to lose Modal.</em></li>
-                    <li>"Why is keeping principal crucial now?" -> <em>Need it for Renovation.</em></li>
-                    <li>"How would you feel if it wasn't there?" -> <em>Like I failed my family.</em> (Root: Fear of Failure)</li>
-                </ol>
-            </div>
-        </div>
-
-        <div id="quant" class="view-section">
-            <div class="section-header">
-                <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> Quantitative Instrument</h2>
-                <div class="badges">
-                    <span class="badge badge-red">Real-time Scoring</span>
-                    <span class="badge">IDR Context</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>1. Portfolio Composition</h3>
-                <p class="text-muted">Which describes your current asset mix?</p>
-                <div class="selection-group">
-                    <label class="selection-card">
-                        <input type="radio" name="q1" value="0">
-                        <span>100% Cash/Deposito</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q1" value="25">
-                        <span>Mostly SBN (Bonds)</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q1" value="50">
-                        <span>Balanced Mix (Reksa Dana Campuran)</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q1" value="100">
-                        <span>Aggressive (Crypto/Stocks)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>2. Time Horizon Constraint</h3>
-                <p class="text-muted">When do you realistically need this money back?</p>
-                <div class="selection-group">
-                    <label class="selection-card">
-                        <input type="radio" name="q3" value="0">
-                        <span>< 12 Months (Butuh Cepat)</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q3" value="33">
-                        <span>1 - 3 Years</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q3" value="66">
-                        <span>3 - 5 Years</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q3" value="100">
-                        <span>5+ Years (Long Term)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>3. Behavioral Checks</h3>
-                
-                <div style="margin-top: 1.5rem;">
-                    <p><strong>Loss Aversion (Coin Toss):</strong><br>
-                    <span class="text-muted">On Tails you lose Rp 1jt. How much win on Heads to play?</span></p>
-                    <div class="selection-group">
-                        <label class="selection-card">
-                            <input type="radio" name="q5" value="100">
-                            <span>Rp 1.000.000 (Rational)</span>
-                        </label>
-                        <label class="selection-card">
-                            <input type="radio" name="q5" value="66">
-                            <span>Rp 1.500.000 (Moderate)</span>
-                        </label>
-                        <label class="selection-card">
-                            <input type="radio" name="q5" value="33">
-                            <span>Rp 2.000.000 (High Aversion)</span>
-                        </label>
-                        <label class="selection-card">
-                            <input type="radio" name="q5" value="0">
-                            <span>Never Play (Extreme Safety)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-                    <p><strong>Literacy Check:</strong><br>
-                    <span class="text-muted">If BI Interest Rates rise, what happens to SBN prices?</span></p>
-                    <div class="selection-group">
-                        <label class="selection-card">
-                            <input type="radio" name="q6" value="wrong">
-                            <span>They Rise (Harganya Naik)</span>
-                        </label>
-                        <label class="selection-card">
-                            <input type="radio" name="q6" value="correct">
-                            <span>They Fall (Harganya Turun)</span>
-                        </label>
-                        <label class="selection-card">
-                            <input type="radio" name="q6" value="neutral">
-                            <span>Stay Same / Don't Know</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>4. The Volatility Test</h3>
-                <p class="text-muted">Market drops 15% in one month. What do you do?</p>
-                <div class="selection-group">
-                    <label class="selection-card">
-                        <input type="radio" name="q8" value="0">
-                        <span>Sell / Cut Loss immediately</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q8" value="50">
-                        <span>Wait / Hold (Nyangkut)</span>
-                    </label>
-                    <label class="selection-card">
-                        <input type="radio" name="q8" value="100">
-                        <span>Buy More (Serok Bawah)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>5. Choice-Based Conjoint</h3>
-                <p class="text-muted" style="margin-bottom: 1rem;">Imagine investing <strong>Rp 500 Juta</strong>. Pick one package:</p>
-                <div class="conjoint-wrapper">
-                    <table class="conjoint-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th>Option 1 (Safety)</th>
-                                <th>Option 2 (Sweet Spot)</th>
-                                <th>Option 3 (High Octane)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Protection</td>
-                                <td>100% Guaranteed</td>
-                                <td>90% Protected</td>
-                                <td>0% Protected</td>
-                            </tr>
-                            <tr>
-                                <td>Return</td>
-                                <td>6.0% p.a.</td>
-                                <td>11% p.a.</td>
-                                <td>22% p.a.</td>
-                            </tr>
-                            <tr>
-                                <td>Lock-Up</td>
-                                <td>3 Years</td>
-                                <td>1 Year</td>
-                                <td>Monthly</td>
-                            </tr>
-                            <tr>
-                                <td>Action</td>
-                                <td><button class="conjoint-btn" onclick="selectConjoint(0, 1)">Select This</button></td>
-                                <td><button class="conjoint-btn" onclick="selectConjoint(50, 2)">Select This</button></td>
-                                <td><button class="conjoint-btn" onclick="selectConjoint(100, 3)">Select This</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>6. The Budget Allocation Game</h3>
-                <p class="text-muted" style="margin-bottom: 1.5rem;">
-                    You have <strong>Rp 1 Miliar</strong>. How much would you put in each bucket? 
-                    <br><small><em>(Must total 100%)</em></small>
-                </p>
-
-                <div class="strategy-container">
-                    
-                    <div class="strategy-row strat-a">
-                        <div class="strategy-info">
-                            <div class="strategy-title">
-                                <span>
-                                    <i class="fas fa-shield-alt" style="color: var(--accent-green)"></i> 
-                                    The Safety Net
-                                    <span class="real-world-tag">Like Deposito / SBN</span>
-                                </span>
-                            </div>
-                            <p class="strategy-desc">
-                                100% Guaranteed Principal.<br>
-                                <strong>Return: ~6% p.a.</strong> (Low but Safe)
-                            </p>
-                        </div>
-                        <div class="slider-wrapper">
-                            <div class="slider-meta">
-                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
-                                <span id="val-a" style="font-weight:700; color:var(--accent-green);">33%</span>
-                            </div>
-                            <input type="range" id="range-a" min="0" max="100" value="33" oninput="updateAllocation()">
-                        </div>
-                    </div>
-
-                    <div class="strategy-row strat-b">
-                        <div class="strategy-info">
-                            <div class="strategy-title">
-                                <span>
-                                    <i class="fas fa-balance-scale" style="color: var(--accent-purple)"></i> 
-                                    The Smart Balance
-                                    <span class="real-world-tag">Like Balanced Fund</span>
-                                </span>
-                            </div>
-                            <p class="strategy-desc">
-                                90% Protected (Risking 10%).<br>
-                                <strong>Return: Target 10-12% p.a.</strong> (Moderate)
-                            </p>
-                        </div>
-                        <div class="slider-wrapper">
-                            <div class="slider-meta">
-                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
-                                <span id="val-b" style="font-weight:700; color:var(--accent-purple);">33%</span>
-                            </div>
-                            <input type="range" id="range-b" min="0" max="100" value="33" oninput="updateAllocation()">
-                        </div>
-                    </div>
-
-                    <div class="strategy-row strat-c">
-                        <div class="strategy-info">
-                            <div class="strategy-title">
-                                <span>
-                                    <i class="fas fa-rocket" style="color: var(--primary)"></i> 
-                                    The Alpha Hunter
-                                    <span class="real-world-tag">Like Stocks / Crypto</span>
-                                </span>
-                            </div>
-                            <p class="strategy-desc">
-                                0% Protected (Can lose principal).<br>
-                                <strong>Return: Target 20%+ p.a.</strong> (High Risk)
-                            </p>
-                        </div>
-                        <div class="slider-wrapper">
-                            <div class="slider-meta">
-                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
-                                <span id="val-c" style="font-weight:700; color:var(--primary);">34%</span>
-                            </div>
-                            <input type="range" id="range-c" min="0" max="100" value="34" oninput="updateAllocation()">
-                        </div>
-                    </div>
-
-                </div>
-
-                <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.9rem; color: var(--secondary);">Total Allocation:</span>
-                    <span id="total-display" style="font-weight: 800; font-size: 1.3rem;">Total: 100%</span>
-                </div>
-            </div>
-
-            <button class="cta-btn" onclick="calculateScientificResults()">
-                <i class="fas fa-microchip"></i> Generate Analysis Profile
-            </button>
-
-            <div id="results-panel" class="results-panel">
-                <div class="res-header">
-                    <div>
-                        <h2 id="res-archetype" style="color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2rem;">Calculating...</h2>
-                        <p style="color: #94a3b8;">Interpretation based on weighted behavioral scoring.</p>
-                    </div>
-                    <div class="score-circle">
-                        <div class="score-val" id="res-score">0</div>
-                        <div class="score-lbl">Risk Score</div>
-                    </div>
-                </div>
-
-                <div class="rec-box">
-                    <h4 style="color: #d8b4fe; margin-bottom: 0.5rem;">Recommended Product Formulation</h4>
-                    <p id="res-recommendation" style="font-size: 1.1rem; line-height: 1.6;">Pending calculation...</p>
-                </div>
-
-                <h4 style="margin-top: 2rem; color: var(--accent-green); margin-bottom: 1rem;">Behavioral Insights Detected:</h4>
-                <ul id="res-insights" style="padding-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
-                    <li>Complete the survey above to see insights.</li>
-                </ul>
-            </div>
-
-        </div>
-    </main>
-
-    <footer style="text-align: center; padding: 2rem; color: var(--secondary); font-size: 0.8rem; border-top: 1px solid var(--border); background: white;">
-        &copy; 2025 ResearchHub Indonesia. Internal Use Only.
-    </footer>
-
+        <footer style="text-align: center; padding: 2rem; color: var(--secondary); font-size: 0.8rem; border-top: 1px solid var(--border); background: white;">
+            &copy; 2025 ResearchHub Indonesia. Internal Use Only.
+        </footer>
+    </div>
     <script>
+        // --- AUTHENTICATION LOGIC (NEW) ---
+        function authenticate() {
+            const input = document.getElementById('password-input').value;
+            const errorMsg = document.getElementById('login-error');
+            const loginScreen = document.getElementById('login-screen');
+            const mainApp = document.getElementById('main-app');
+            
+            // === SET YOUR PASSWORD HERE ===
+            const correctPassword = "admin123"; 
+
+            if (input === correctPassword) {
+                // Fade out login screen
+                loginScreen.style.opacity = '0';
+                loginScreen.style.transition = 'opacity 0.5s';
+                
+                // Show App
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    mainApp.style.display = 'block';
+                    // Scroll to top
+                    window.scrollTo(0,0);
+                }, 500);
+            } else {
+                errorMsg.style.display = 'block';
+                // Shake animation
+                const box = document.querySelector('.login-box');
+                box.style.transform = 'translateX(10px)';
+                setTimeout(() => box.style.transform = 'translateX(-10px)', 100);
+                setTimeout(() => box.style.transform = 'translateX(0)', 200);
+            }
+        }
+
+        // Allow "Enter" key for password
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                authenticate();
+            }
+        });
+
+
+        // --- ORIGINAL APP LOGIC ---
+
         // Global variable for Conjoint choice
         let selectedConjointValue = null;
         let selectedConjointLockup = null;
