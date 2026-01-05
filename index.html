@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Product Research Dashboard | Indonesia Market</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #dc2626; /* ID Red */
+            --primary-dark: #b91c1c;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --accent-green: #059669;
+            --accent-purple: #7c3aed;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: #1e293b;
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* --- Hero & Nav --- */
+        nav {
+            background: var(--surface);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #fff1f2 0%, #fff 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #111;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        /* --- Tabs --- */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: -4rem; /* Pull tabs into hero */
+            position: relative;
+            z-index: 10;
+        }
+
+        .tabs {
+            background: var(--surface);
+            padding: 0.5rem;
+            border-radius: 99px;
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            gap: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            border: none;
+            background: none;
+            padding: 0.75rem 2rem;
+            border-radius: 99px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--secondary);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+        }
+
+        /* --- Main Layout --- */
+        main {
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+            min-height: 80vh;
+        }
+
+        .view-section {
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .view-section.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Card Components --- */
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-red { background: #fef2f2; color: var(--primary); }
+
+        /* --- Concept Cards (Grid) --- */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .concept-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .card-top-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #f1f5f9;
+            padding: 0.4rem 1rem;
+            border-bottom-left-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .c-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 0.95rem;
+        }
+        .c-stat-row:last-child { border-bottom: none; }
+        .c-val { font-weight: 700; color: #0f172a; }
+
+        .probe-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-left: 3px solid var(--primary);
+            font-size: 0.9rem;
+            color: var(--secondary);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        /* --- Interactive Survey Elements --- */
+        .selection-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        @media (min-width: 600px) {
+            .selection-group { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Hidden Radio Button Trick */
+        .selection-card input[type="radio"] {
+            display: none;
+        }
+
+        .selection-card {
+            display: block;
+            padding: 1rem 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--secondary);
+            background: white;
+            position: relative;
+        }
+
+        .selection-card:hover {
+            border-color: var(--primary);
+            background: #fff1f2;
+        }
+
+        /* Style when checked */
+        .selection-card input[type="radio"]:checked + span::before {
+            content: "\f058"; /* FontAwesome Check */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .selection-card input[type="radio"]:checked + span {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+        
+        .selection-card:has(input:checked) {
+            border-color: var(--primary);
+            background: #fef2f2;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+        }
+
+        /* --- Accordions --- */
+        .accordion-item {
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: white;
+        }
+
+        .accordion-header {
+            padding: 1.25rem;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e293b;
+            transition: background 0.2s;
+        }
+
+        .accordion-header:hover { background: #f8fafc; }
+
+        .accordion-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            background: white;
+        }
+
+        .accordion-item.open .accordion-content {
+            padding: 1.5rem;
+            max-height: 1000px; /* Arbitrary large number */
+            border-top: 1px solid var(--border);
+        }
+
+        /* --- Conjoint Table --- */
+        .conjoint-wrapper {
+            overflow-x: auto;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .conjoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 600px;
+        }
+
+        .conjoint-table th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .conjoint-table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .conjoint-btn {
+            background: white;
+            border: 1px solid var(--secondary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .conjoint-col-selected {
+            background: #eff6ff !important;
+        }
+        
+        .conjoint-col-selected .conjoint-btn {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* --- Updated Strategy Allocation Styles (Section 6) --- */
+        .strategy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .strategy-row {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        /* Specific colors for each strategy */
+        .strat-a { border-left: 5px solid var(--accent-green); }
+        .strat-b { border-left: 5px solid var(--accent-purple); }
+        .strat-c { border-left: 5px solid var(--primary); }
+
+        .strategy-info {
+            margin-bottom: 0.75rem;
+        }
+
+        .strategy-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .strategy-desc {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            margin-top: 0.25rem;
+        }
+
+        .real-world-tag {
+            font-size: 0.75rem;
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* Slider Logic */
+        .slider-wrapper {
+            margin-top: 0.5rem;
+        }
+        .slider-meta { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        
+        input[type=range] {
+            width: 100%;
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-top: -10px; 
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+        }
+        
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+
+        @media (min-width: 768px) {
+            .strategy-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Text on left, slider on right */
+                align-items: center;
+                gap: 1.5rem;
+            }
+            .strategy-info { margin-bottom: 0; }
+        }
+
+        /* --- Results Panel --- */
+        .results-panel {
+            margin-top: 3rem;
+            background: #0f172a;
+            color: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(220,38,38,0.2) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        .res-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .score-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 6px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 0 20px rgba(220,38,38,0.4);
+        }
+
+        .score-val { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+        .score-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-top: 5px; }
+
+        .rec-box {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-btn {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .cta-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .deep-dive {
+            border: 1px solid #ddd6fe;
+            background: #f5f3ff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .deep-dive h4 { color: var(--accent-purple); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Helper for text */
+        .text-muted { color: var(--secondary); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fas fa-chart-pie"></i>
+            <span>ResearchHub ID</span>
+        </div>
+        <div style="font-size: 0.9rem; color: var(--secondary); display: none; margin-left: auto; margin-right: 1rem; @media(min-width: 600px){display:block;}">
+            v2.2 Stable
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Investor DNA Profiler</h1>
+        <p>A specialized tool for understanding the behavioral nuances of the Indonesian retail investor market. Switch modes below.</p>
+        
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('qual')"><i class="fas fa-comments"></i> Qualitative Guide</button>
+                <button class="tab-btn" onclick="switchTab('quant')"><i class="fas fa-calculator"></i> Quantitative Survey</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="qual" class="view-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-microphone-alt" style="color: var(--primary);"></i> Interview Guide (IDI)</h2>
+                <div class="badges">
+                    <span class="badge badge-red">Indonesia Market</span>
+                    <span class="badge">Behavioral Deep Dive</span>
+                </div>
+            </div>
+
+            <div class="accordion-item open">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    Part 1: Warm-Up & DNA (10 Mins)
+                    <i class="fas fa-chevron-up"></i>
+                </div>
+                <div class="accordion-content">
+                    <p class="text-muted" style="margin-bottom: 1rem;">Goal: Understand self-perception vs. behavior.</p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li><strong>The "Arisan" Pitch:</strong> "Describe your investment style to a friend in one sentence."</li>
+                        <li><strong>The Pain Test:</strong> "Recall your last big loss (Crypto/Tech). Did you Sell, Hold (Nyangkut), or Buy More (Serok)?"</li>
+                        <li><strong>Goal Anchor:</strong> "Are you protecting wealth (Deposito style) or chasing multiplication (Trading)?"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Part 2: Concept Stress Testing</h3>
+            <p class="text-muted">Present these cards to the participant to gauge reaction.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="card-top-tag" style="background:#ecfdf5; color: #059669;">Ultra-Conservative</div>
+                    <h3 style="margin-bottom: 1rem;">Card A: The Fortress</h3>
+                    <div class="c-stat-row">
+                        <span>Structure</span>
+                        <span class="c-val">100% Guarantee</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Return</span>
+                        <span class="c-val">Net 6% p.a.</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Lock-Up</span>
+                        <span class="c-val">3 Years</span>
+                    </div>
+                    <div class="probe-box">
+                        <i class="fas fa-comment-dots"></i> "Does 6% feel safe or stagnant? Would you lock money for 3 years just for safety?"
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <div class="card-top-tag" style="background:#f5f3ff; color: #7c3aed;">Balanced</div>
+                    <h3 style="margin-bottom: 1rem;">Card B: Asymmetric</h3>
+                    <div class="c-stat-row">
+                        <span>Structure</span>
+                        <span class="c-val">90% Protected</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Return</span>
+                        <span class="c-val">Target 10-12% p.a.</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Lock-Up</span>
+                        <span class="c-val">1.5 Years</span>
+                    </div>
+                    <div class="probe-box">
+                        <i class="fas fa-comment-dots"></i> "Is risking 10% worth doubling the return of a Deposito?"
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <div class="card-top-tag" style="background:#fef2f2; color: #dc2626;">Aggressive</div>
+                    <h3 style="margin-bottom: 1rem;">Card C: Alpha Hunter</h3>
+                    <div class="c-stat-row">
+                        <span>Structure</span>
+                        <span class="c-val">0% Protected</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Return</span>
+                        <span class="c-val">Target 20-25% p.a.</span>
+                    </div>
+                    <div class="c-stat-row">
+                        <span>Lock-Up</span>
+                        <span class="c-val">Monthly</span>
+                    </div>
+                    <div class="probe-box">
+                        <i class="fas fa-comment-dots"></i> "No safety net. Who is this for? Is it for you?"
+                    </div>
+                </div>
+            </div>
+
+            <div class="deep-dive">
+                <h4><i class="fas fa-layer-group"></i> The "5 Whys" Laddering</h4>
+                <p style="font-size: 0.95rem;">If they pick "Capital Protection":</p>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>"Why is the guarantee important?" -> <em>Don't want to lose Modal.</em></li>
+                    <li>"Why is keeping principal crucial now?" -> <em>Need it for Renovation.</em></li>
+                    <li>"How would you feel if it wasn't there?" -> <em>Like I failed my family.</em> (Root: Fear of Failure)</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="quant" class="view-section">
+            <div class="section-header">
+                <h2><i class="fas fa-clipboard-check" style="color: var(--primary);"></i> Quantitative Instrument</h2>
+                <div class="badges">
+                    <span class="badge badge-red">Real-time Scoring</span>
+                    <span class="badge">IDR Context</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>1. Portfolio Composition</h3>
+                <p class="text-muted">Which describes your current asset mix?</p>
+                <div class="selection-group">
+                    <label class="selection-card">
+                        <input type="radio" name="q1" value="0">
+                        <span>100% Cash/Deposito</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q1" value="25">
+                        <span>Mostly SBN (Bonds)</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q1" value="50">
+                        <span>Balanced Mix (Reksa Dana Campuran)</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q1" value="100">
+                        <span>Aggressive (Crypto/Stocks)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2. Time Horizon Constraint</h3>
+                <p class="text-muted">When do you realistically need this money back?</p>
+                <div class="selection-group">
+                    <label class="selection-card">
+                        <input type="radio" name="q3" value="0">
+                        <span>< 12 Months (Butuh Cepat)</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q3" value="33">
+                        <span>1 - 3 Years</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q3" value="66">
+                        <span>3 - 5 Years</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q3" value="100">
+                        <span>5+ Years (Long Term)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>3. Behavioral Checks</h3>
+                
+                <div style="margin-top: 1.5rem;">
+                    <p><strong>Loss Aversion (Coin Toss):</strong><br>
+                    <span class="text-muted">On Tails you lose Rp 1jt. How much win on Heads to play?</span></p>
+                    <div class="selection-group">
+                        <label class="selection-card">
+                            <input type="radio" name="q5" value="100">
+                            <span>Rp 1.000.000 (Rational)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q5" value="66">
+                            <span>Rp 1.500.000 (Moderate)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q5" value="33">
+                            <span>Rp 2.000.000 (High Aversion)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q5" value="0">
+                            <span>Never Play (Extreme Safety)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <p><strong>Literacy Check:</strong><br>
+                    <span class="text-muted">If BI Interest Rates rise, what happens to SBN prices?</span></p>
+                    <div class="selection-group">
+                        <label class="selection-card">
+                            <input type="radio" name="q6" value="wrong">
+                            <span>They Rise (Harganya Naik)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q6" value="correct">
+                            <span>They Fall (Harganya Turun)</span>
+                        </label>
+                        <label class="selection-card">
+                            <input type="radio" name="q6" value="neutral">
+                            <span>Stay Same / Don't Know</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>4. The Volatility Test</h3>
+                <p class="text-muted">Market drops 15% in one month. What do you do?</p>
+                <div class="selection-group">
+                    <label class="selection-card">
+                        <input type="radio" name="q8" value="0">
+                        <span>Sell / Cut Loss immediately</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q8" value="50">
+                        <span>Wait / Hold (Nyangkut)</span>
+                    </label>
+                    <label class="selection-card">
+                        <input type="radio" name="q8" value="100">
+                        <span>Buy More (Serok Bawah)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>5. Choice-Based Conjoint</h3>
+                <p class="text-muted" style="margin-bottom: 1rem;">Imagine investing <strong>Rp 500 Juta</strong>. Pick one package:</p>
+                <div class="conjoint-wrapper">
+                    <table class="conjoint-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Option 1 (Safety)</th>
+                                <th>Option 2 (Sweet Spot)</th>
+                                <th>Option 3 (High Octane)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Protection</td>
+                                <td>100% Guaranteed</td>
+                                <td>90% Protected</td>
+                                <td>0% Protected</td>
+                            </tr>
+                            <tr>
+                                <td>Return</td>
+                                <td>6.0% p.a.</td>
+                                <td>11% p.a.</td>
+                                <td>22% p.a.</td>
+                            </tr>
+                            <tr>
+                                <td>Lock-Up</td>
+                                <td>3 Years</td>
+                                <td>1 Year</td>
+                                <td>Monthly</td>
+                            </tr>
+                            <tr>
+                                <td>Action</td>
+                                <td><button class="conjoint-btn" onclick="selectConjoint(0, 1)">Select This</button></td>
+                                <td><button class="conjoint-btn" onclick="selectConjoint(50, 2)">Select This</button></td>
+                                <td><button class="conjoint-btn" onclick="selectConjoint(100, 3)">Select This</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>6. The Budget Allocation Game</h3>
+                <p class="text-muted" style="margin-bottom: 1.5rem;">
+                    You have <strong>Rp 1 Miliar</strong>. How much would you put in each bucket? 
+                    <br><small><em>(Must total 100%)</em></small>
+                </p>
+
+                <div class="strategy-container">
+                    
+                    <div class="strategy-row strat-a">
+                        <div class="strategy-info">
+                            <div class="strategy-title">
+                                <span>
+                                    <i class="fas fa-shield-alt" style="color: var(--accent-green)"></i> 
+                                    The Safety Net
+                                    <span class="real-world-tag">Like Deposito / SBN</span>
+                                </span>
+                            </div>
+                            <p class="strategy-desc">
+                                100% Guaranteed Principal.<br>
+                                <strong>Return: ~6% p.a.</strong> (Low but Safe)
+                            </p>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-meta">
+                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                <span id="val-a" style="font-weight:700; color:var(--accent-green);">33%</span>
+                            </div>
+                            <input type="range" id="range-a" min="0" max="100" value="33" oninput="updateAllocation()">
+                        </div>
+                    </div>
+
+                    <div class="strategy-row strat-b">
+                        <div class="strategy-info">
+                            <div class="strategy-title">
+                                <span>
+                                    <i class="fas fa-balance-scale" style="color: var(--accent-purple)"></i> 
+                                    The Smart Balance
+                                    <span class="real-world-tag">Like Balanced Fund</span>
+                                </span>
+                            </div>
+                            <p class="strategy-desc">
+                                90% Protected (Risking 10%).<br>
+                                <strong>Return: Target 10-12% p.a.</strong> (Moderate)
+                            </p>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-meta">
+                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                <span id="val-b" style="font-weight:700; color:var(--accent-purple);">33%</span>
+                            </div>
+                            <input type="range" id="range-b" min="0" max="100" value="33" oninput="updateAllocation()">
+                        </div>
+                    </div>
+
+                    <div class="strategy-row strat-c">
+                        <div class="strategy-info">
+                            <div class="strategy-title">
+                                <span>
+                                    <i class="fas fa-rocket" style="color: var(--primary)"></i> 
+                                    The Alpha Hunter
+                                    <span class="real-world-tag">Like Stocks / Crypto</span>
+                                </span>
+                            </div>
+                            <p class="strategy-desc">
+                                0% Protected (Can lose principal).<br>
+                                <strong>Return: Target 20%+ p.a.</strong> (High Risk)
+                            </p>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-meta">
+                                <span style="font-size:0.8rem; color:#64748b;">Allocation:</span>
+                                <span id="val-c" style="font-weight:700; color:var(--primary);">34%</span>
+                            </div>
+                            <input type="range" id="range-c" min="0" max="100" value="34" oninput="updateAllocation()">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9rem; color: var(--secondary);">Total Allocation:</span>
+                    <span id="total-display" style="font-weight: 800; font-size: 1.3rem;">Total: 100%</span>
+                </div>
+            </div>
+
+            <button class="cta-btn" onclick="calculateScientificResults()">
+                <i class="fas fa-microchip"></i> Generate Analysis Profile
+            </button>
+
+            <div id="results-panel" class="results-panel">
+                <div class="res-header">
+                    <div>
+                        <h2 id="res-archetype" style="color: var(--accent-green); margin-bottom: 0.5rem; font-size: 2rem;">Calculating...</h2>
+                        <p style="color: #94a3b8;">Interpretation based on weighted behavioral scoring.</p>
+                    </div>
+                    <div class="score-circle">
+                        <div class="score-val" id="res-score">0</div>
+                        <div class="score-lbl">Risk Score</div>
+                    </div>
+                </div>
+
+                <div class="rec-box">
+                    <h4 style="color: #d8b4fe; margin-bottom: 0.5rem;">Recommended Product Formulation</h4>
+                    <p id="res-recommendation" style="font-size: 1.1rem; line-height: 1.6;">Pending calculation...</p>
+                </div>
+
+                <h4 style="margin-top: 2rem; color: var(--accent-green); margin-bottom: 1rem;">Behavioral Insights Detected:</h4>
+                <ul id="res-insights" style="padding-left: 1.5rem; line-height: 1.8; color: #cbd5e1;">
+                    <li>Complete the survey above to see insights.</li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--secondary); font-size: 0.8rem; border-top: 1px solid var(--border); background: white;">
+        &copy; 2025 ResearchHub Indonesia. Internal Use Only.
+    </footer>
+
+    <script>
+        // Global variable for Conjoint choice
+        let selectedConjointValue = null;
+        let selectedConjointLockup = null;
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Accordion Logic
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            if (!item.classList.contains('open')) {
+                item.classList.add('open');
+                header.querySelector('i').className = 'fas fa-chevron-up';
+            } else {
+                item.classList.remove('open');
+                header.querySelector('i').className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Conjoint Selection Logic
+        function selectConjoint(score, colIndex) {
+            selectedConjointValue = score;
+            selectedConjointLockup = colIndex; 
+            
+            const rows = document.querySelectorAll('.conjoint-table tr');
+            rows.forEach(row => {
+                for(let i=1; i<=3; i++) {
+                    if(row.cells[i]) row.cells[i].classList.remove('conjoint-col-selected');
+                }
+            });
+            rows.forEach((row, index) => {
+                if(index > 0 && row.cells[colIndex]) {
+                    row.cells[colIndex].classList.add('conjoint-col-selected');
+                }
+            });
+            
+            // Visual feedback
+            document.querySelectorAll('.conjoint-btn').forEach(btn => btn.textContent = "Select");
+            event.target.textContent = "Selected";
+        }
+
+        // Allocation Game Logic (UPDATED)
+        function updateAllocation() {
+            const a = parseInt(document.getElementById('range-a').value);
+            const b = parseInt(document.getElementById('range-b').value);
+            const c = parseInt(document.getElementById('range-c').value);
+            
+            document.getElementById('val-a').textContent = a + '%';
+            document.getElementById('val-b').textContent = b + '%';
+            document.getElementById('val-c').textContent = c + '%';
+
+            const total = a + b + c;
+            const totalDisplay = document.getElementById('total-display');
+            
+            if (total === 100) {
+                totalDisplay.style.color = 'var(--accent-green)';
+                totalDisplay.innerHTML = 'Total: 100% <i class="fas fa-check-circle"></i>';
+            } else {
+                totalDisplay.style.color = 'var(--primary)';
+                totalDisplay.innerHTML = `Total: ${total}% (Must be 100%)`;
+            }
+        }
+
+        // SCORING LOGIC
+        function calculateScientificResults() {
+            const getVal = (name) => {
+                const el = document.querySelector(`input[name="${name}"]:checked`);
+                return el ? el.value : null;
+            };
+
+            const q1 = parseInt(getVal('q1') || 0); 
+            // q2 generic default
+            const q3 = parseInt(getVal('q3') || 50); 
+            const q5 = parseInt(getVal('q5') || 50); 
+            const q6 = getVal('q6'); 
+            const q8 = parseInt(getVal('q8') || 50); 
+            
+            const allocA = parseInt(document.getElementById('range-a').value);
+            const allocB = parseInt(document.getElementById('range-b').value);
+            const allocC = parseInt(document.getElementById('range-c').value);
+            const allocationScore = (allocA * 0) + (allocB * 0.5) + (allocC * 1); 
+
+            const conjointScore = selectedConjointValue !== null ? selectedConjointValue : 50;
+
+            let weightedScore = 
+                (q1 * 0.15) + 
+                (q3 * 0.10) + 
+                (q5 * 0.10) + 
+                (q8 * 0.20) + // Volatility high weight
+                (conjointScore * 0.20) + 
+                (allocationScore * 0.25);
+
+            weightedScore = Math.round(weightedScore);
+
+            // Determine Archetype
+            let archetype = "";
+            let recommendation = "";
+            let colorClass = "";
+            
+            if (weightedScore < 35) {
+                archetype = "The Safety Guardian";
+                recommendation = "<strong>Product A: 100% Capital Guaranteed Note.</strong><br>Prioritizes safety above all. Best suited for SBN Retail or Capital Protected Fund substitute (Net 6%).";
+                colorClass = "#059669";
+            } else if (weightedScore < 65) {
+                archetype = "The Asymmetric Strategist";
+                recommendation = "<strong>Product B: 90-95% Protected Structure.</strong><br>Willing to risk small deductible (5-10%) for upside. Matches the 'Hold/Nyangkut' mentality typical of balanced fund investors.";
+                colorClass = "#7c3aed";
+            } else {
+                archetype = "The Alpha Hunter";
+                recommendation = "<strong>Product C: High-Yield / Low-Protection.</strong><br>Views protection as a cost. Offer 'Buffer Note' or Equity-Linked Notes tied to IHSG/Big Caps.";
+                colorClass = "#dc2626";
+            }
+
+            // Insights
+            let insights = [];
+            
+            if (q6 === 'wrong' && weightedScore > 60) {
+                insights.push("<strong>⚠️ Overconfidence Risk:</strong> High risk appetite but low literacy on Bond/Rate mechanics. High mis-selling risk.");
+            }
+            if (q1 > 75 && q8 < 25) {
+                insights.push("<strong>🚩 'Fake Aggressive':</strong> Portfolio implies aggression, but panic sells (Cut Loss) during volatility. Do NOT sell high-risk products.");
+            }
+            if (q3 === 0 && selectedConjointLockup === 1) {
+                insights.push("<strong>⏳ Liquidity Mismatch:</strong> User needs money in <1 year but selected a 3-year lockup. Recommend liquid funds (RDPU) only.");
+            }
+            if (insights.length === 0) insights.push("✅ Consistent Profile: No major contradictions detected.");
+
+            // Render
+            const panel = document.getElementById('results-panel');
+            panel.style.display = 'block';
+            
+            // Animate Scroll
+            panel.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+            document.getElementById('res-score').textContent = weightedScore;
+            document.getElementById('res-archetype').textContent = archetype;
+            document.getElementById('res-archetype').style.color = colorClass;
+            document.querySelector('.score-circle').style.borderColor = colorClass;
+            document.getElementById('res-recommendation').innerHTML = recommendation;
+            
+            const insightsList = document.getElementById('res-insights');
+            insightsList.innerHTML = "";
+            insights.forEach(insight => {
+                const li = document.createElement('li');
+                li.innerHTML = insight;
+                insightsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
